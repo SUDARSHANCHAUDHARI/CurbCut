@@ -1,0 +1,61 @@
+# CurbCut CI — accessibility gate for pull requests.
+# Copy to .github/workflows/curbcut.yml. Jobs self-skip when their toolchain isn't present.
+name: CurbCut A11y Gate
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  hook-scan:
+    name: CurbCut hook scan (all platforms)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Scan changed UI files through the CurbCut hook
+        env:
+          CURBCUT_MODE: block
+        run: |
+          # Feed each changed source file to the hook as a synthetic Write payload.
+          base="${{ github.event.pull_request.base.sha }}"
+          files=$(git diff --name-only "$base"...HEAD -- \
+                  '*.jsx' '*.tsx' '*.js' '*.ts' '*.html' '*.vue' '*.svelte' '*.kt' '*.swift' || true)
+          fail=0
+          for f in $files; do
+            [ -f "$f" ] || continue
+            payload=$(python3 - "$f" <<'PY'
+import json, sys
+p = sys.argv[1]
+print(json.dumps({"tool_name": "Write",
+                  "tool_input": {"file_path": p, "content": open(p, encoding="utf-8").read()}}))
+PY
+)
+            echo "$payload" | python3 enforce/hooks/curbcut-guard.py || fail=1
+          done
+          exit $fail
+
+  eslint-a11y:
+    name: eslint-plugin-jsx-a11y (web)
+    runs-on: ubuntu-latest
+    if: ${{ hashFiles('package.json') != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - run: npm ci || npm install
+      - run: npx eslint --no-error-on-unmatched-pattern -c enforce/rules/eslint/.eslintrc.curbcut.json "**/*.{jsx,tsx}"
+
+  axe:
+    name: axe-core (built web output)
+    runs-on: ubuntu-latest
+    if: ${{ hashFiles('package.json') != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - run: npm ci || npm install
+      - run: |
+          echo "Wire your build + @axe-core/cli against the served output here, e.g.:"
+          echo "  npx @axe-core/cli http://localhost:PORT --exit"

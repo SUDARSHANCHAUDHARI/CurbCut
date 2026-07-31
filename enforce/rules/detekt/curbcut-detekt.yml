@@ -1,0 +1,22 @@
+# CurbCut — Compose enforcement (detekt).
+# Seed config: pairs the built-in RequireContentDescription-style intent with CurbCut's
+# hook rules. Merge into your project's detekt.yml. Full custom-rule set is on the roadmap.
+#
+# For deeper Compose a11y linting also enable Android Lint's built-in checks:
+#   ContentDescription, ClickableViewAccessibility, KeyboardInaccessibleWidget.
+
+CurbCut:
+  active: true
+  # Text sizing — mirror of the hook's COMPOSE_TEXT_SIZE_DP (use sp, never dp, for fontSize).
+  ForbiddenMethodCall:
+    active: true
+    methods:
+      - reason: "Use sp for text so it honours the system font scale (SC 1.4.4)."
+        value: 'androidx.compose.ui.unit.dp'  # flagged only in fontSize context via custom rule (roadmap)
+
+# Recommended companion: ktlint/compose rules from the community 'compose-rules' set.
+# https://mrmans0n.github.io/compose-rules/
+compose:
+  ContentEmitterReturningValues: { active: true }
+  ModifierComposable: { active: true }
+  ModifierMissing: { active: true }

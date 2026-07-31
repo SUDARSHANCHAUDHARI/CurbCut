@@ -1,0 +1,23 @@
+# CurbCut — SwiftUI enforcement (SwiftLint custom rules). EXPERIMENTAL / seed.
+# SwiftUI a11y is largely NOT statically checkable (accessibility is inferred at render),
+# so this catches only the few greppable opt-outs. Guides carry the rest.
+# Merge the custom_rules block into your project .swiftlint.yml.
+
+custom_rules:
+  curbcut_fixed_font_size:
+    name: "CurbCut: fixed font size opts out of Dynamic Type"
+    regex: '\.font\(\.system\(size:\s*\d+'
+    message: "Use a semantic font style (.font(.body)) or add .dynamicTypeSize (SC 1.4.4)."
+    severity: warning
+
+  curbcut_tap_on_text:
+    name: "CurbCut: onTapGesture on Text is invisible to VoiceOver"
+    regex: 'Text\([^)]*\)\s*\n?\s*\.onTapGesture'
+    message: "Use a Button { } with a Text label so VoiceOver exposes it as a control (SC 4.1.2)."
+    severity: error
+
+  curbcut_disabled_font_scaling:
+    name: "CurbCut: do not disable font scaling"
+    regex: 'minimumScaleFactor\(0(\.0+)?\)'
+    message: "Do not collapse text scaling to zero; let Dynamic Type work (SC 1.4.4)."
+    severity: warning
