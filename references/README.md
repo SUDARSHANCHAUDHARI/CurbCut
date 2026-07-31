@@ -32,7 +32,7 @@ single Markdown file following the Forms guide's shape.
 | Component | web | compose | swiftui |
 | :--- | :---: | :---: | :---: |
 | **Forms & validation** | [available](web/guide-forms.md) | [available](compose/guide-forms.md) | [available](swiftui/guide-forms.md) |
-| Buttons & controls | planned | planned | planned |
-| Modals & dialogs | planned | planned | planned |
+| **Buttons & controls** | [available](web/guide-buttons.md) | [available](compose/guide-buttons.md) | [available](swiftui/guide-buttons.md) |
+| **Modals & dialogs** | [available](web/guide-modals.md) | [available](compose/guide-modals.md) | [available](swiftui/guide-modals.md) |
 | Images & icons | planned | planned | planned |
 | Live regions / announcements | planned | planned | planned |
