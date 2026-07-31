@@ -53,8 +53,8 @@ honest about what only a person can.
 > https://github.com/SUDARSHANCHAUDHARI/CurbCut/blob/main/CurbCut.md"*
 
 > **v0.1 scope, stated plainly:** web enforcement (hook + eslint + axe) is reliable today; Compose is
-> partial; SwiftUI is experimental (it isn't reliably static-checkable). Component guides currently
-> cover **Forms, Buttons, and Modals** end-to-end on all three platforms — the rest are on the roadmap below.
+> partial; SwiftUI is experimental (it isn't reliably static-checkable). Component guides cover the
+> five core components — **Forms, Buttons, Modals, Images, Live regions** — end-to-end on all three platforms.
 
 **2. Turn on enforcement (optional but it's the point).** Register the hook in `.claude/settings.json`
 (see [`enforce/hooks/`](enforce/hooks/curbcut-guard.py)) and drop a `.curbcut.json` in your repo:

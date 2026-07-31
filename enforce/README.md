@@ -46,10 +46,13 @@ or per-repo in `.curbcut.json`: `"disable": ["RULE_ID"]`.
 | `WEB_IMG_NO_ALT` | 🟠 | web | ✅ |
 | `WEB_OUTLINE_NONE` | 🟠 | web | ✅ |
 | `WEB_POSITIVE_TABINDEX` | 🟠 | web | ✅ |
+| `WEB_ANCHOR_NO_HREF` | 🟠 | web | ✅ |
 | `WEB_REDUNDANT_ROLE` | 🟡 | web | warn only |
+| `WEB_AUTOFOCUS` | 🟡 | web | warn only |
 | `COMPOSE_CLICKABLE_NO_ROLE` | 🔴 | compose | ✅ |
 | `COMPOSE_TEXT_SIZE_DP` | 🟠 | compose | ✅ |
 | `COMPOSE_ICON_NULL_DESC` | 🟡 | compose | warn only |
+| `COMPOSE_EMPTY_DESC` | 🟡 | compose | warn only |
 | `SWIFTUI_TAP_ON_TEXT` | 🟠 | swiftui | ✅ |
 | `SWIFTUI_FIXED_FONT` | 🟡 | swiftui | warn only |
 

@@ -24,15 +24,15 @@ Each pattern in a guide is tagged the same way as the core (`CurbCut.md` §1):
 
 ## Component index
 
-Written and linked below = available now. Everything else is **planned for v0.2** and not yet
-written — until a cell is a link, the core rules in `CurbCut.md` (which are platform-agnostic) still
-apply; there just isn't a component-specific guide yet. **Contributions welcome** — a new guide is a
-single Markdown file following the Forms guide's shape.
+All five core components below are available on every platform. Further components (tables, tabs,
+carousels, drag-and-drop, autocomplete, tooltips) are the next contribution target — until a
+component-specific guide exists, the platform-agnostic core rules in `CurbCut.md` still apply.
+**Contributions welcome** — a new guide is a single Markdown file following the Forms guide's shape.
 
 | Component | web | compose | swiftui |
 | :--- | :---: | :---: | :---: |
 | **Forms & validation** | [available](web/guide-forms.md) | [available](compose/guide-forms.md) | [available](swiftui/guide-forms.md) |
 | **Buttons & controls** | [available](web/guide-buttons.md) | [available](compose/guide-buttons.md) | [available](swiftui/guide-buttons.md) |
 | **Modals & dialogs** | [available](web/guide-modals.md) | [available](compose/guide-modals.md) | [available](swiftui/guide-modals.md) |
-| Images & icons | planned | planned | planned |
-| Live regions / announcements | planned | planned | planned |
+| **Images & icons** | [available](web/guide-images.md) | [available](compose/guide-images.md) | [available](swiftui/guide-images.md) |
+| **Live regions / announcements** | [available](web/guide-live-regions.md) | [available](compose/guide-live-regions.md) | [available](swiftui/guide-live-regions.md) |

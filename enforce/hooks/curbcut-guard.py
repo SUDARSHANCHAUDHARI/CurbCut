@@ -130,6 +130,20 @@ RULES: list[Rule] = [
         "Use tabindex=\"0\" (in flow) or \"-1\" (programmatic focus); reorder the DOM instead.",
         "SC 2.4.3",
     ),
+    Rule(
+        "WEB_ANCHOR_NO_HREF", "HIGH", WEB,
+        _line_matches(re.compile(r"<a\b(?![^>]*href=)[^>]*\bonClick\b", re.I)),
+        "Anchor with a click handler but no href — not keyboard-focusable, wrong role.",
+        "Use a <button> for actions; give <a> a real href only for navigation.",
+        "SC 2.1.1 / 4.1.2",
+    ),
+    Rule(
+        "WEB_AUTOFOCUS", "MEDIUM", WEB,
+        _line_matches(re.compile(r"\bauto[Ff]ocus\b", re.I)),
+        "autofocus can disorient screen-reader and magnifier users by moving focus unexpectedly.",
+        "Set focus deliberately in response to a user action instead of on load.",
+        "SC 2.4.3",
+    ),
     # ---- Jetpack Compose ----------------------------------------------------
     Rule(
         "COMPOSE_CLICKABLE_NO_ROLE", "CRITICAL", COMPOSE,
@@ -156,6 +170,13 @@ RULES: list[Rule] = [
         "contentDescription = null is silent to TalkBack — correct only for decorative icons.",
         "If this icon is interactive or informative, describe its ACTION "
         "(e.g. \"Delete item\"). Keep null only when a labelled sibling conveys the meaning.",
+        "SC 1.1.1",
+    ),
+    Rule(
+        "COMPOSE_EMPTY_DESC", "MEDIUM", COMPOSE,
+        _line_matches(re.compile(r"contentDescription\s*=\s*[\"']\s*[\"']")),
+        'contentDescription = "" announces nothing but is not marked decorative — likely a bug.',
+        "Use null for genuine decoration, or a real action/meaning description otherwise.",
         "SC 1.1.1",
     ),
     # ---- SwiftUI (experimental — greppable subset only) ---------------------
