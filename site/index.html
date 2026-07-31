@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CurbCut — Enforced accessibility for AI-built UIs</title>
+<meta name="description" content="CurbCut is a persistent context standard that enforces WCAG 2.2 AA in AI-generated UI — Compose, SwiftUI, and web — with a write-time hook that blocks anti-patterns before they land." />
+<meta property="og:title" content="CurbCut — Enforced accessibility for AI-built UIs" />
+<meta property="og:description" content="Most tools advise. CurbCut enforces. Native-first accessibility context + a hook that blocks WCAG anti-patterns at write time." />
+<meta property="og:type" content="website" />
+<style>
+  :root{
+    --bg:#0c0e14; --panel:#141824; --panel2:#1b2030; --line:#262c3d;
+    --ink:#e9ecf5; --mut:#9aa2b8; --dim:#6a7288;
+    --accent:#ff7a4d; --accent2:#ffb27a;
+    --auto:#41d17f; --assist:#f2c14e; --human:#5aa9ff;
+    --crit:#ff5c6c;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+  .mut{color:var(--mut)}
+
+  /* nav */
+  nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);
+    background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;gap:20px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.02em;font-size:18px}
+  .ramp{width:26px;height:18px;flex:0 0 auto}
+  nav .sp{flex:1}
+  nav a{color:var(--mut);text-decoration:none;font-size:14px;font-weight:500}
+  nav a:hover{color:var(--ink)}
+  .btn{display:inline-block;background:var(--accent);color:#1a0f08;font-weight:700;
+    padding:9px 16px;border-radius:9px;text-decoration:none;font-size:14px;
+    border:1px solid transparent;transition:transform .08s ease, background .15s}
+  .btn:hover{background:var(--accent2);transform:translateY(-1px)}
+  .btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+  .btn.ghost:hover{border-color:var(--accent);background:transparent}
+
+  /* hero */
+  header{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  header::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(700px 320px at 78% -10%, color-mix(in srgb,var(--accent) 22%,transparent), transparent 60%),
+      linear-gradient(180deg, transparent 60%, var(--bg));
+    opacity:.7}
+  .hero{position:relative;padding:96px 0 80px}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;
+    letter-spacing:.04em;text-transform:uppercase;color:var(--accent2);
+    border:1px solid var(--line);border-radius:999px;padding:5px 12px;background:var(--panel)}
+  h1{font-size:clamp(2.4rem,6vw,4rem);line-height:1.03;letter-spacing:-.03em;
+    margin:22px 0 0;font-weight:800}
+  h1 .u{background:linear-gradient(120deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{font-size:clamp(1.05rem,2.4vw,1.3rem);color:var(--mut);max-width:640px;margin:20px 0 0}
+  .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+  .install{margin-top:28px;max-width:680px}
+  .install .lbl{font-size:12px;color:var(--dim);margin-bottom:6px}
+  code.line{display:block;font-family:var(--mono);font-size:13.5px;background:var(--panel);
+    border:1px solid var(--line);border-radius:10px;padding:14px 16px;color:var(--ink);
+    overflow-x:auto;white-space:pre}
+  .stats{display:flex;flex-wrap:wrap;gap:28px;margin-top:40px}
+  .stat b{display:block;font-size:1.7rem;font-weight:800;letter-spacing:-.02em}
+  .stat span{font-size:13px;color:var(--dim)}
+
+  section{padding:76px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:clamp(1.5rem,3.4vw,2.1rem);letter-spacing:-.02em;margin:0 0 8px;font-weight:800}
+  .lede{color:var(--mut);max-width:640px;margin:0 0 34px}
+
+  /* taxonomy */
+  .levels{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .lvl{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;
+    border-top:3px solid var(--c)}
+  .lvl.auto{--c:var(--auto)} .lvl.assist{--c:var(--assist)} .lvl.human{--c:var(--human)}
+  .lvl .tag{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--c)}
+  .lvl h3{margin:8px 0 6px;font-size:1.05rem}
+  .lvl p{margin:0;color:var(--mut);font-size:14px}
+  .verifies{margin-top:14px;font-size:12.5px;color:var(--dim);border-top:1px solid var(--line);padding-top:12px}
+
+  /* before / after */
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .card .h{padding:12px 16px;font-size:13px;font-weight:700;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:8px}
+  .card.bad .h{color:var(--crit)} .card.good .h{color:var(--auto)}
+  .card pre{margin:0;padding:16px;font-family:var(--mono);font-size:12.7px;line-height:1.7;
+    overflow-x:auto;color:#cdd3e6}
+  .tk{color:var(--accent2)} .cm{color:var(--dim)} .st{color:#8fd6a6}
+
+  /* box grid */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .box h3{margin:0 0 6px;font-size:1rem}
+  .box p{margin:0;color:var(--mut);font-size:13.5px}
+  .box .k{font-family:var(--mono);font-size:11.5px;color:var(--accent2)}
+
+  /* fidelity */
+  table.fid{width:100%;border-collapse:collapse;font-size:14px;background:var(--panel);
+    border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  table.fid th,table.fid td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--line)}
+  table.fid th{color:var(--dim);font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.03em}
+  table.fid tr:last-child td{border-bottom:none}
+  .pill{font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
+  .p-full{background:color-mix(in srgb,var(--auto) 18%,transparent);color:var(--auto)}
+  .p-part{background:color-mix(in srgb,var(--assist) 18%,transparent);color:var(--assist)}
+  .p-exp{background:color-mix(in srgb,var(--human) 18%,transparent);color:var(--human)}
+
+  footer{padding:48px 0 64px}
+  .foot{display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between}
+  footer a{color:var(--mut);text-decoration:none} footer a:hover{color:var(--ink)}
+  .note{color:var(--dim);font-size:13px;margin-top:22px;max-width:680px}
+
+  @media(max-width:760px){
+    .levels,.ba,.grid{grid-template-columns:1fr}
+    nav a.hide{display:none}
+    .hero{padding:72px 0 60px}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <span class="brand">
+      <svg class="ramp" viewBox="0 0 26 18" fill="none" aria-hidden="true">
+        <path d="M1 17H25" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M1 17V13C1 13 9 4 25 4" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      CurbCut
+    </span>
+    <span class="sp"></span>
+    <a class="hide" href="#how">How it works</a>
+    <a class="hide" href="#box">What's inside</a>
+    <a class="hide" href="#scope">Scope</a>
+    <a class="btn ghost" href="https://github.com/SUDARSHANCHAUDHARI/CurbCut">GitHub ↗</a>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap hero">
+    <span class="kicker">WCAG 2.2 AA · ADA · EAA</span>
+    <h1>Most tools <span class="mut">advise.</span><br/>CurbCut <span class="u">enforces.</span></h1>
+    <p class="sub">A persistent context standard for building accessible UI with AI — native-first
+      (Compose, SwiftUI) and web — with a write-time hook that blocks WCAG anti-patterns before they land.</p>
+
+    <div class="cta">
+      <a class="btn" href="https://github.com/SUDARSHANCHAUDHARI/CurbCut">Get started</a>
+      <a class="btn ghost" href="#how">See how it works</a>
+    </div>
+
+    <div class="install">
+      <div class="lbl">Point your agent at the standard — one line in CLAUDE.md / .cursorrules:</div>
+      <code class="line">Follow the accessibility rules in CurbCut.md strictly:
+https://github.com/SUDARSHANCHAUDHARI/CurbCut/blob/main/CurbCut.md</code>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b>13</b><span>enforced rules</span></div>
+      <div class="stat"><b>15</b><span>platform guides</span></div>
+      <div class="stat"><b>3</b><span>platforms · web · Compose · SwiftUI</span></div>
+      <div class="stat"><b>0</b><span>trust required — it's a gate, not advice</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- curb-cut principle -->
+<section>
+  <div class="wrap">
+    <h2>The curb-cut principle</h2>
+    <p class="lede">The ramp cut into a sidewalk was built for wheelchair users — and it ended up
+      helping everyone: strollers, luggage, delivery carts. Accessibility done at the source isn't a
+      favor to a minority. It's baseline quality that lifts every user.</p>
+  </div>
+</section>
+
+<!-- how it works: taxonomy -->
+<section id="how">
+  <div class="wrap">
+    <h2>Every rule declares who verifies it</h2>
+    <p class="lede">That's the idea an advisory guideline can't express. It's what lets one document
+      drive both the model's behavior and the CI gate that stops it.</p>
+    <div class="levels">
+      <div class="lvl auto">
+        <div class="tag">🟢 AUTO</div>
+        <h3>The machine blocks it</h3>
+        <p>Deterministically checkable from source — clickable divs, missing labels, suppressed focus,
+          dp-sized text. The hook denies the write.</p>
+        <div class="verifies">Verified by: the CurbCut hook · lint packs · CI</div>
+      </div>
+      <div class="lvl assist">
+        <div class="tag">🟡 ASSISTED</div>
+        <h3>The AI applies + explains</h3>
+        <p>Needs reasoning over intent — focus order, live-region correctness. Applied proactively,
+          with the reasoning shown.</p>
+        <div class="verifies">Verified by: the AI, at generation time</div>
+      </div>
+      <div class="lvl human">
+        <div class="tag">🔵 HUMAN</div>
+        <h3>A person must confirm</h3>
+        <p>Announcement quality, plain language — only a real screen-reader session proves it. The AI
+          may prepare and request; never fake it.</p>
+        <div class="verifies">Verified by: a person with a screen reader</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- before / after -->
+<section>
+  <div class="wrap">
+    <h2>What that catches</h2>
+    <p class="lede">The single most common thing an AI generates wrong — a clickable box — is
+      AUTO-blocked. Keyboard users can't reach the first one; the hook won't let it be written.</p>
+    <div class="ba">
+      <div class="card bad">
+        <div class="h">✗ blocked at write time</div>
+<pre>&lt;<span class="tk">div</span> onClick={save}&gt;Save&lt;/<span class="tk">div</span>&gt;
+<span class="cm">// not focusable · no Enter/Space</span>
+<span class="cm">// no role · invisible to AT</span></pre>
+      </div>
+      <div class="card good">
+        <div class="h">✓ what CurbCut steers to</div>
+<pre>&lt;<span class="st">button</span> type=<span class="st">"button"</span> onClick={save}&gt;
+  Save
+&lt;/<span class="st">button</span>&gt;
+<span class="cm">// keyboard + focus + semantics, free</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- what's inside -->
+<section id="box">
+  <div class="wrap">
+    <h2>What's in the box</h2>
+    <p class="lede">Not a guideline PDF — a working system you install.</p>
+    <div class="grid">
+      <div class="box"><div class="k">CurbCut.md</div><h3>Normative core</h3><p>Principle Zero, POUR, compliance profiles, the AI behavior contract — every rule tagged AUTO/ASSISTED/HUMAN.</p></div>
+      <div class="box"><div class="k">enforce/hooks</div><h3>Write-time hook</h3><p>Blocks anti-patterns as they're written. Configurable warn/block, inline disables, tested.</p></div>
+      <div class="box"><div class="k">enforce/rules · ci</div><h3>Lint packs + CI</h3><p>ESLint flat config, detekt & SwiftLint seeds, a GitHub Action gate on every PR.</p></div>
+      <div class="box"><div class="k">references/</div><h3>15 platform guides</h3><p>Forms, Buttons, Modals, Images, Live regions — real idiomatic code for web, Compose, SwiftUI.</p></div>
+      <div class="box"><div class="k">benchmark/</div><h3>Pre-registered proof</h3><p>Methodology + turnkey runner with an enforcement condition. No numbers claimed until a real run.</p></div>
+      <div class="box"><div class="k">skill/</div><h3>Agent skill</h3><p>Auto-invoking operating procedure so accessibility is applied on every UI file you touch.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- scope -->
+<section id="scope">
+  <div class="wrap">
+    <h2>Honest by design</h2>
+    <p class="lede">Enforcement fidelity tiers by what's actually machine-checkable — that's physics,
+      not a shortcut. Guidance is full-depth everywhere; automatic blocking is honest about where it's reliable.</p>
+    <table class="fid">
+      <thead><tr><th>Platform</th><th>Guides</th><th>Hook blocking</th><th>Lint pack</th></tr></thead>
+      <tbody>
+        <tr><td>Web</td><td><span class="pill p-full">deep</span></td><td><span class="pill p-full">reliable</span></td><td><span class="pill p-full">eslint</span></td></tr>
+        <tr><td>Jetpack Compose</td><td><span class="pill p-full">deep</span></td><td><span class="pill p-part">partial</span></td><td><span class="pill p-part">detekt seed</span></td></tr>
+        <tr><td>SwiftUI</td><td><span class="pill p-full">deep</span></td><td><span class="pill p-exp">experimental</span></td><td><span class="pill p-exp">seed</span></td></tr>
+      </tbody>
+    </table>
+    <p class="note">SwiftUI accessibility is inferred at render, so it can't be grepped like JSX — its
+      guides are complete while its automatic enforcement is honestly labeled experimental. We don't
+      oversell what a build can't prove.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <span class="brand">
+        <svg class="ramp" viewBox="0 0 26 18" fill="none" aria-hidden="true">
+          <path d="M1 17H25" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M1 17V13C1 13 9 4 25 4" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        CurbCut
+      </span>
+      <span>
+        <a href="https://github.com/SUDARSHANCHAUDHARI/CurbCut">GitHub</a> ·
+        <a href="https://github.com/SUDARSHANCHAUDHARI/CurbCut/blob/main/CurbCut.md">The standard</a> ·
+        <a href="https://github.com/SUDARSHANCHAUDHARI/CurbCut/releases">Releases</a>
+      </span>
+    </div>
+    <p class="note">MIT licensed. Inspired by <a href="https://github.com/fecarrico/A11Y.md">A11Y.md</a>
+      by Felipe A. Carriço — CurbCut adds the enforcement layer and native-first depth.
+      Built by SudarshanTechLabs.</p>
+  </div>
+</footer>
+
+</body>
+</html>
