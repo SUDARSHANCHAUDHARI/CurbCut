@@ -22,14 +22,17 @@ Each pattern in a guide is tagged the same way as the core (`CurbCut.md` §1):
 > SwiftUI. Read a web guide as *semantic intent*, then emit the native equivalent. Inventing hybrids
 > (e.g. `aria-live` in SwiftUI) is 🔴 CRITICAL.
 
-## Component index (v1)
+## Component index
+
+Written and linked below = available now. Everything else is **planned for v0.2** and not yet
+written — until a cell is a link, the core rules in `CurbCut.md` (which are platform-agnostic) still
+apply; there just isn't a component-specific guide yet. **Contributions welcome** — a new guide is a
+single Markdown file following the Forms guide's shape.
 
 | Component | web | compose | swiftui |
 | :--- | :---: | :---: | :---: |
-| Forms & validation | [✓](web/guide-forms.md) | [✓](compose/guide-forms.md) | [✓](swiftui/guide-forms.md) |
-| Buttons & controls | seed | seed | seed |
-| Modals & dialogs | seed | seed | seed |
-| Images & icons | seed | seed | seed |
-| Live regions / announcements | seed | seed | seed |
-
-*"seed" guides are intentionally short and marked **help wanted** — see the roadmap in the README.*
+| **Forms & validation** | [available](web/guide-forms.md) | [available](compose/guide-forms.md) | [available](swiftui/guide-forms.md) |
+| Buttons & controls | planned | planned | planned |
+| Modals & dialogs | planned | planned | planned |
+| Images & icons | planned | planned | planned |
+| Live regions / announcements | planned | planned | planned |

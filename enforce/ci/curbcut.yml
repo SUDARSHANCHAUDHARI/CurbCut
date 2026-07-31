@@ -45,7 +45,7 @@ PY
       - uses: actions/setup-node@v4
         with: { node-version: "20" }
       - run: npm ci || npm install
-      - run: npx eslint --no-error-on-unmatched-pattern -c enforce/rules/eslint/.eslintrc.curbcut.json "**/*.{jsx,tsx}"
+      - run: npx eslint --no-error-on-unmatched-pattern -c enforce/rules/eslint/eslint.config.mjs "**/*.{jsx,tsx}"
 
   axe:
     name: axe-core (built web output)
