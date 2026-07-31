@@ -3,6 +3,17 @@
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-08-01
+
+### Added
+- **Complete core reference library:** Buttons, Modals, Images, and Live-regions guides added for all three platforms — the reference set now covers five core components (Forms, Buttons, Modals, Images, Live regions) ×3 (web / Compose / SwiftUI).
+- **Three new hook rules:** `WEB_ANCHOR_NO_HREF` (blocks), `WEB_AUTOFOCUS` (warn), `COMPOSE_EMPTY_DESC` (warn). 13 rules total; test suite extended.
+- **`curbcut` skill (`skill/SKILL.md`):** auto-invoking operating procedure for accessibility work; installable to `~/.claude/skills/`.
+- **Benchmark runner:** `harness/aggregate.py` computes the methodology's outcomes (medians per condition, zero-critical share, A→B / B→C deltas) from `results.csv`. The pipeline (score → axe → aggregate) is now turnkey; `RESULTS.md` still reserved for a full pre-registered run.
+
+### Fixed
+- `WEB_AUTOFOCUS` regex corrected to match `autoFocus`/`autofocus` (was missing the `o`).
+
 ## [0.1.0] - 2026-07-31
 
 ### Added

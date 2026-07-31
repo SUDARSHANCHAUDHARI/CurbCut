@@ -11,8 +11,10 @@ sys.modules["guard"] = guard  # required before exec so dataclass annotations re
 spec.loader.exec_module(guard)
 
 BAD = {
-    "a.jsx": '<div onClick={go}>Save</div>\n<img src="x.png">\ninput:focus{outline:none}',
-    "a.kt": 'Box(Modifier.clickable { go() })\nText(fontSize = 12.dp)',
+    "a.jsx": '<div onClick={go}>Save</div>\n<img src="x.png">\ninput:focus{outline:none}\n'
+             '<a onClick={go}>x</a>\n<input autoFocus />',
+    "a.kt": 'Box(Modifier.clickable { go() })\nText(fontSize = 12.dp)\n'
+            'Icon(x, contentDescription = "")',
     "a.swift": 'Text("Tap").onTapGesture { go() }\n.font(.system(size: 13))',
 }
 CLEAN = {
