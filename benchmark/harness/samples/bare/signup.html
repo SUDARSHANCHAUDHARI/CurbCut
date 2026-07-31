@@ -1,0 +1,25 @@
+<!doctype html>
+<!-- SAMPLE for pipeline smoke test — illustrative "bare" output. NOT a benchmark result. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sign up</title>
+  <style>
+    .field:focus { outline: none; }        /* removes focus ring */
+    .btn { background:#4a4a4a; color:#fff; padding:8px; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <img src="logo.png" />                    <!-- no alt -->
+  <h1>Create account</h1>
+  <form id="f">
+    <input class="field" type="text" placeholder="Full name" tabindex="1" />
+    <input class="field" type="text" placeholder="Email" tabindex="2" />
+    <input class="field" type="password" placeholder="Password" tabindex="3" />
+    <div class="btn" onclick="submitForm()">Sign up</div>   <!-- clickable div -->
+  </form>
+  <script>
+    function submitForm() { /* validate + submit */ }
+  </script>
+</body>
+</html>

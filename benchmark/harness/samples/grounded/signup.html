@@ -1,0 +1,40 @@
+<!doctype html>
+<!-- SAMPLE for pipeline smoke test — illustrative "grounded" output. NOT a benchmark result. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sign up</title>
+  <style>
+    .field:focus-visible { outline: 2px solid; outline-offset: 2px; }   /* visible focus */
+    .btn { background:#1a1a1a; color:#fff; padding:12px 16px; min-height:44px; }
+    .error { color:#b00020; }
+  </style>
+</head>
+<body>
+  <img src="logo.png" alt="Acme" />
+  <h1>Create account</h1>
+  <form id="f" novalidate>
+    <label for="name">Full name</label>
+    <input id="name" type="text" autocomplete="name" required />
+
+    <label for="email">Email</label>
+    <input id="email" type="email" autocomplete="email" required
+           aria-describedby="email-hint" />
+    <p id="email-hint">Format: name@example.com</p>
+
+    <label for="pw">Password</label>
+    <input id="pw" type="password" autocomplete="new-password" required
+           aria-describedby="pw-hint" />
+    <p id="pw-hint">At least 8 characters.</p>
+
+    <button type="submit" class="btn">Sign up</button>
+    <div id="status" role="status" aria-live="polite"></div>
+  </form>
+  <script>
+    document.getElementById('f').addEventListener('submit', (e) => {
+      e.preventDefault();
+      // validate; on failure set aria-invalid + focus first invalid + announce via #status
+    });
+  </script>
+</body>
+</html>
