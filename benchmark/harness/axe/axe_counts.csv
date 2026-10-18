@@ -1,0 +1,3 @@
+model,task,condition,run,file,axe_critical,axe_serious,axe_moderate,axe_minor,axe_status
+,,,signup,samples/bare/signup.html,1,1,2,0,ok
+,,,signup,samples/grounded/signup.html,0,0,2,0,ok
