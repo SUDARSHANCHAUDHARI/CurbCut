@@ -20,6 +20,32 @@ engine.
 `bare` findings: `WEB_CLICKABLE_DIV` (submit as a `div`), `WEB_IMG_NO_ALT`, `WEB_OUTLINE_NONE`, and
 `WEB_POSITIVE_TABINDEX` ×3.
 
+## Block 0 plumbing check — 2026-10-18 (still NOT a result)
+
+All three measurements now run end to end on the same two samples. Versions as run:
+`@axe-core/cli` 4.14.0 (axe-core 4.14.0), chromedriver 155.0.8059.84, Chrome 155.0.8059.80,
+Python 3.9.6, Node v22.14.0.
+
+`bash serve_and_axe.sh samples` — axe-core in headless Chrome, violations counted per rule:
+
+| Sample | axe critical | serious | moderate | minor |
+| :--- | :---: | :---: | :---: | :---: |
+| `bare/signup.html` | 1 | 1 | 2 | 0 |
+| `grounded/signup.html` | 0 | 0 | 2 | 0 |
+
+`python3 checklist.py samples/` — deterministic checks for the `form` task:
+
+| Sample | passed | failed | unknown |
+| :--- | :---: | :--- | :---: |
+| `bare/signup.html` | 1/4 | `native_controls`, `label_assoc`, `live_region` | 1 (`target_size`) |
+| `grounded/signup.html` | 4/4 | — | 1 (`target_size`) |
+
+Both samples keep 2 moderate axe findings (`landmark-one-main`, `region`) — the samples are
+fragments with no landmark structure, which is a property of the samples, not a condition effect.
+
+`target_size` is reported UNKNOWN rather than passed or failed: a static parser cannot see computed
+styles. `python3 checklist.py --selftest` asserts the two samples stay separated.
+
 ## Why this is NOT a benchmark number
 - **n = 1**, single task, single author — not the pre-registered 81 generations.
 - **Samples are hand-written**, not model-generated in fresh sessions; the "bare" case is a

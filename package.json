@@ -1,0 +1,18 @@
+{
+  "name": "curbcut",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Benchmark tooling only \u2014 CurbCut itself ships no npm package.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SUDARSHANCHAUDHARI/CurbCut.git"
+  },
+  "scripts": {
+    "axe": "bash benchmark/harness/serve_and_axe.sh"
+  },
+  "devDependencies": {
+    "@axe-core/cli": "4.14.0",
+    "chromedriver": "155.0.2"
+  }
+}
