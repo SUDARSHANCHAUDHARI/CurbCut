@@ -1,0 +1,16 @@
+# Notice
+
+CurbCut
+Copyright (c) 2026 SudarshanTechLabs (Sudarshan Chaudhari)
+
+This product includes ideas inspired by the A11Y.md project,
+Copyright (c) Felipe A. Carriço, which is also MIT licensed.
+
+CurbCut is an independent work. It extends the persistent-context concept with an
+enforcement layer and native-first guides, and it is not endorsed by or affiliated
+with the A11Y.md project or its author.
+
+This attribution lives here rather than in `LICENSE` on purpose: text added inside the
+MIT body stops GitHub from recognising the licence, and the repository was reported as
+`NOASSERTION` for that reason. Keep `LICENSE` as the unmodified MIT text and record
+credits in this file.
